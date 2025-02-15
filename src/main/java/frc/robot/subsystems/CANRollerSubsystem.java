@@ -39,6 +39,6 @@ public class CANRollerSubsystem extends SubsystemBase {
 
   /** This is a method that makes the roller spin */
   public void runRoller(double forward, double reverse) {
-    rollerMotor.set(ControlMode.PercentOutput, forward - reverse);
+    rollerMotor.set(ControlMode.PercentOutput, -forward + reverse);
   }
 }
