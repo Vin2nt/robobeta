@@ -7,22 +7,29 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.CANRollerSubsystem;
+
 
 // Command to run the robot at 1/2 power for 1 second in autonomous
 public class AutoCommand extends Command {
   CANDriveSubsystem driveSubsystem;
+  CANRollerSubsystem rollerSubsystem;
   private Timer timer;
-  private double seconds = 3.0;
+  private double seconds = 4.0;
+  private double rollSeconds = 1.0;
+  private boolean isDriving = true;
 
-  // Constructor. Runs only once when the command is first created.
-  public AutoCommand(CANDriveSubsystem driveSubsystem) {
-    // Save parameter for use later and initialize timer object.
-    this.driveSubsystem = driveSubsystem;
+  
+    // Constructor. Runs only once when the command is first created.
+    public AutoCommand(CANDriveSubsystem driveSubsystem, CANRollerSubsystem rollerSubsystem) {
+      // Save parameter for use later and initialize timer object.
+      this.driveSubsystem = driveSubsystem;
+      this.rollerSubsystem = rollerSubsystem;
     timer = new Timer();
 
     // Declare subsystems required by this command. This should include any
     // subsystem this command sets and output of
-    addRequirements(driveSubsystem);
+    addRequirements(driveSubsystem, rollerSubsystem);
   }
 
   // Runs each time the command is scheduled. For this command, we handle starting
@@ -37,23 +44,28 @@ public class AutoCommand extends Command {
   // Runs every cycle while the command is scheduled (~50 times per second)
   @Override
   public void execute() {
-    // drive at 1/2 speed
-    driveSubsystem.driveArcade(0.5, 0.0);
+    if (isDriving) {
+      driveSubsystem.driveArcade(0.5, 0.0);
+    } else {
+      rollerSubsystem.runRoller(1.0, 0.0);
+    }
   }
 
   // Runs each time the command ends via isFinished or being interrupted.
   @Override
   public void end(boolean isInterrupted) {
-    // stop drive motors
     driveSubsystem.driveArcade(0.0, 0.0);
+    rollerSubsystem.runRoller(0.0, 0.0);
   }
 
   // Runs every cycle while the command is scheduled to check if the command is
   // finished
   @Override
   public boolean isFinished() {
-    // check if timer exceeds seconds, when it has this will return true indicating
-    // this command is finished
-    return timer.get() >= seconds;
+    if (isDriving && timer.get() >= seconds) {
+      isDriving = false;
+      timer.restart();
+    }
+    return !isDriving && timer.get() >= rollSeconds;
   }
 }
