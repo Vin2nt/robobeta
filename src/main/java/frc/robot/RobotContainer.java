@@ -82,14 +82,15 @@ public class RobotContainer {
     // stick away from you (a negative value) drives the robot forwards (a positive
     // value). Similarly for the X axis where we need to flip the value so the
     // joystick matches the WPILib convention of counter-clockwise positive
+    driveSubsystem.setDefaultCommand(new DriveCommand(
+        () -> -driverController.getLeftY() *
+            (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
+        () -> -driverController.getRightX(),
+        driveSubsystem));
 
     // Set the default command for the roller subsystem to an instance of
     // RollerCommand with the values provided by the triggers on the operator
     // controller
-    driveSubsystem.setDefaultCommand(new DriveCommand(
-      () -> -driverController.getLeftY(), // Full speed for forward/backward movement
-      () -> -driverController.getRightX() * 0.5, // Half speed for rotation
-      driveSubsystem));
   }
 
   /**
