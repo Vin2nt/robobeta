@@ -12,7 +12,7 @@ import frc.robot.subsystems.CANDriveSubsystem;
 public class AutoCommand extends Command {
   CANDriveSubsystem driveSubsystem;
   private Timer timer;
-  private double seconds = 1.0;
+  private double seconds = 3.0;
 
   // Constructor. Runs only once when the command is first created.
   public AutoCommand(CANDriveSubsystem driveSubsystem) {
