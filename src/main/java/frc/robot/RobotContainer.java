@@ -91,10 +91,10 @@ public class RobotContainer {
     // Set the default command for the roller subsystem to an instance of
     // RollerCommand with the values provided by the triggers on the operator
     // controller
-    rollerSubsystem.setDefaultCommand(new RollerCommand(
-        () -> operatorController.getRightTriggerAxis(),
-        () -> operatorController.getLeftTriggerAxis(),
-        rollerSubsystem));
+    driveSubsystem.setDefaultCommand(new DriveCommand(
+      () -> -driverController.getLeftY(), // Full speed for forward/backward movement
+      () -> -driverController.getRightX() * 0.5, // Half speed for rotation
+      driveSubsystem));
   }
 
   /**
